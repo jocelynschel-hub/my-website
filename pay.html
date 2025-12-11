@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<head>
+    <title>
+        Payment/Orders
+    </title>
+</head>
+<body>
+    <h2 style="text-align:center; color:#007bff; font-family:Arial, sans-serif;">Choose Your Payment Method</h2>
+
+<div style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; margin-top:30px;">
+
+    <!-- Payment Options Cards -->
+    <div style="border:2px solid #007bff; border-radius:12px; padding:20px; width:220px; text-align:center; cursor:pointer; transition:0.3s;"
+         onclick="selectPayment('btc')"
+         onmouseover="this.style.background='#f0f8ff';" onmouseout="this.style.background='#fff';">
+        <h3 style="color:#007bff;">Bitcoin (BTC)</h3>
+    </div>
+
+    <div style="border:2px solid #007bff; border-radius:12px; padding:20px; width:220px; text-align:center; cursor:pointer; transition:0.3s;"
+         onclick="selectPayment('usdc')"
+         onmouseover="this.style.background='#f0f8ff';" onmouseout="this.style.background='#fff';">
+        <h3 style="color:#007bff;">USDC (ERC20)</h3>
+    </div>
+
+    <div style="border:2px solid #007bff; border-radius:12px; padding:20px; width:220px; text-align:center; cursor:pointer; transition:0.3s;"
+         onclick="selectPayment('sol')"
+         onmouseover="this.style.background='#f0f8ff';" onmouseout="this.style.background='#fff';">
+        <h3 style="color:#007bff;">Solana (SOL)</h3>
+    </div>
+
+    <div style="border:2px solid #007bff; border-radius:12px; padding:20px; width:220px; text-align:center; cursor:pointer; transition:0.3s;"
+         onclick="selectPayment('eth')"
+         onmouseover="this.style.background='#f0f8ff';" onmouseout="this.style.background='#fff';">
+        <h3 style="color:#007bff;">Ethereum (ERC20)</h3>
+    </div>
+
+    <div style="border:2px solid #007bff; border-radius:12px; padding:20px; width:220px; text-align:center; cursor:pointer; transition:0.3s;"
+         onclick="selectPayment('usdt_erc')"
+         onmouseover="this.style.background='#f0f8ff';" onmouseout="this.style.background='#fff';">
+        <h3 style="color:#007bff;">USDT (ERC20)</h3>
+    </div>
+
+    <div style="border:2px solid #007bff; border-radius:12px; padding:20px; width:220px; text-align:center; cursor:pointer; transition:0.3s;"
+         onclick="selectPayment('usdt_trc')"
+         onmouseover="this.style.background='#f0f8ff';" onmouseout="this.style.background='#fff';">
+        <h3 style="color:#007bff;">USDT (TRC20)</h3>
+    </div>
+</div>
+
+<!-- Wallet & Email -->
+<div id="walletBox" style="margin:40px auto; padding:25px; border:2px solid #007bff; border-radius:12px; background:#f0f8ff; width:90%; max-width:500px; display:none; text-align:center; transition:0.3s;">
+    <h3 style="color:#007bff; margin-bottom:10px;">Wallet Address</h3>
+    
+    <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:15px;">
+        <p id="walletAddress" style="font-weight:bold; font-size:16px; word-break:break-all; margin:0;"></p>
+        <button onclick="copyWallet()" 
+                style="padding:5px 10px; background:#007bff; color:white; border:none; border-radius:6px; cursor:pointer; font-size:14px; transition:0.3s;"
+                onmouseover="this.style.background='#0056b3';" onmouseout="this.style.background='#007bff';">
+            Copy
+        </button>
+        <span id="copyMsg" style="color:green; font-size:14px; display:none;">Copied!</span>
+    </div>
+
+    <div style="text-align:left;">
+        <label for="email" style="font-weight:bold;">Enter your email to receive your order:</label><br>
+        <input type="email" id="email" placeholder="you@example.com" 
+               style="width:100%; padding:10px; margin-top:5px; border:1px solid #007bff; border-radius:6px; font-size:15px;">
+
+        <button onclick="submitPayment()" 
+                style="margin-top:15px; padding:12px 25px; background:#007bff; color:white; border:none; border-radius:8px; font-size:16px; cursor:pointer; transition:0.3s;"
+                onmouseover="this.style.background='#0056b3';" onmouseout="this.style.background='#007bff';">
+            I have made this payment
+        </button>
+    </div>
+</div>
+
+<script>
+var selectedPayment = "";
+
+function selectPayment(method){
+    selectedPayment = method;
+    var walletBox = document.getElementById("walletBox");
+    var walletAddress = document.getElementById("walletAddress");
+    var copyMsg = document.getElementById("copyMsg");
+
+    copyMsg.style.display = "none"; // hide copy message
+
+    // Wallet addresses
+    var wallets = {
+        btc: "1GS2dUKffRRKA7yxaMsRnUDUjwtrDtPjQq",
+        usdc: "0x79b017d218df1fedc2408368c4b134447d4209e4",
+        sol: "D97fUBH5fYuc749mCE26jJFBotWzDQHc3P58WqtSjF75",
+        eth: "0x79b017d218df1fedc2408368c4b134447d4209e4",
+        usdt_erc: "0x79b017d218df1fedc2408368c4b134447d4209e4",
+        usdt_trc: "TCV6foBdtULxxYrubQZ4qzrdgMcaRx2uwE"
+    };
+
+    walletAddress.textContent = wallets[method];
+    walletBox.style.display = "block";
+}
+
+function copyWallet(){
+    var walletAddress = document.getElementById("walletAddress").textContent;
+    navigator.clipboard.writeText(walletAddress).then(function(){
+        var copyMsg = document.getElementById("copyMsg");
+        copyMsg.style.display = "inline";
+        setTimeout(function(){ copyMsg.style.display = "none"; }, 1500);
+    });
+}
+
+function submitPayment(){
+    var email = document.getElementById("email").value.trim();
+    if(selectedPayment === ""){
+        alert("Please select a payment method first.");
+        return;
+    }
+    if(email === ""){
+        alert("Please enter your email.");
+        return;
+    }
+
+    alert("Thank you! Your payment method: " + selectedPayment.toUpperCase() +
+          "\nEmail: " + email + "\nWe will process your order soon.");
+
+    // Reset form
+    document.getElementById("email").value = "";
+    document.getElementById("walletBox").style.display = "none";
+    selectedPayment = "";
+}
+</script>
+
+</body>
